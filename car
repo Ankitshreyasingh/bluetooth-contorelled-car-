@@ -1,0 +1,104 @@
+// Define motor control pins
+int motorPin1 = 4;
+int motorPin2 = 5;
+int motorPin3 = 6;
+int motorPin4 = 7;
+
+// Define Bluetooth communication pins
+int rxPin = 0;
+int txPin = 1;
+
+// Define variables for storing received commands
+char command;
+int speed;
+
+void setup() {
+  // Initialize motor control pins as outputs
+  pinMode(motorPin1, OUTPUT);
+  pinMode(motorPin2, OUTPUT);
+  pinMode(motorPin3, OUTPUT);
+  pinMode(motorPin4, OUTPUT);
+
+  // Initialize serial communication
+  Serial.begin(9600);
+
+  // Initialize Bluetooth communication
+  Serial3.begin(9600);
+}
+
+void loop() {
+  // Read incoming Bluetooth data
+  if (Serial3.available()) {
+    command = Serial3.read();
+    speed = Serial3.parseInt();
+
+    // Move the car based on the received command
+    switch (command) {
+      case 'F':
+        moveForward(speed);
+        break;
+      case 'B':
+        moveBackward(speed);
+        break;
+      case 'L':
+        turnLeft(speed);
+        break;
+      case 'R':
+        turnRight(speed);
+        break;
+      case 'S':
+        stopCar();
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+// Function to move the car forward
+void moveForward(int speed) {
+  digitalWrite(motorPin1, HIGH);
+  digitalWrite(motorPin2, LOW);
+  digitalWrite(motorPin3, HIGH);
+  digitalWrite(motorPin4, LOW);
+  analogWrite(motorPin2, speed);
+  analogWrite(motorPin4, speed);
+}
+
+// Function to move the car backward
+void moveBackward(int speed) {
+  digitalWrite(motorPin1, LOW);
+  digitalWrite(motorPin2, HIGH);
+  digitalWrite(motorPin3, LOW);
+  digitalWrite(motorPin4, HIGH);
+  analogWrite(motorPin1, speed);
+  analogWrite(motorPin3, speed);
+}
+
+// Function to turn the car left
+void turnLeft(int speed) {
+  digitalWrite(motorPin1, LOW);
+  digitalWrite(motorPin2, HIGH);
+  digitalWrite(motorPin3, HIGH);
+  digitalWrite(motorPin4, LOW);
+  analogWrite(motorPin1, speed);
+  analogWrite(motorPin4, speed);
+}
+
+// Function to turn the car right
+void turnRight(int speed) {
+  digitalWrite(motorPin1, HIGH);
+  digitalWrite(motorPin2, LOW);
+  digitalWrite(motorPin3, LOW);
+  digitalWrite(motorPin4, HIGH);
+  analogWrite(motorPin2, speed);
+  analogWrite(motorPin3, speed);
+}
+
+// Function to stop the car
+void stopCar() {
+  digitalWrite(motorPin1, LOW);
+  digitalWrite(motorPin2, LOW);
+  digitalWrite(motorPin3, LOW);
+  digitalWrite(motorPin4, LOW);
+}
